@@ -15,25 +15,25 @@ public class CreateUserResponse
     /// <summary>
     /// The user's full name
     /// </summary>
-    public string Name { get; set; } = string.Empty;
+    //public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// The user's email address
     /// </summary>
-    public string Email { get; set; } = string.Empty;
+    //public string Email { get; set; } = string.Empty;
 
     /// <summary>
     /// The user's phone number
     /// </summary>
-    public string Phone { get; set; } = string.Empty;
+    //public string Phone { get; set; } = string.Empty;
 
     /// <summary>
     /// The user's role in the system
     /// </summary>
-    public UserRole Role { get; set; }
+    //public UserRole Role { get; set; }
 
     /// <summary>
     /// The current status of the user
     /// </summary>
-    public UserStatus Status { get; set; }
+    //public UserStatus Status { get; set; }
 }
