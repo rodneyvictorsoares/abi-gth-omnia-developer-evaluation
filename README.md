@@ -1,7 +1,7 @@
 # 🛒 Sales Management API – Developer Evaluation Project
 
-![.NET 6.0](https://img.shields.io/badge/.NET-6.0-blueviolet)
-![Entity Framework Core](https://img.shields.io/badge/Entity%20Framework-Core%206.0-green)
+![.NET 6.0](https://img.shields.io/badge/.NET-8.0-blueviolet)
+![Entity Framework Core](https://img.shields.io/badge/Entity%20Framework-Core%208.0-green)
 ![MediatR](https://img.shields.io/badge/MediatR-CQRS-lightgrey)
 ![RabbitMQ](https://img.shields.io/badge/RabbitMQ-Messaging-orange)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Relational%20DB-blue)
