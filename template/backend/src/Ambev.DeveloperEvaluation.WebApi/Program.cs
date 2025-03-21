@@ -31,6 +31,16 @@ public class Program
             builder.AddBasicHealthChecks();
             builder.Services.AddSwaggerGen(c =>
             {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Developer Evaluation API - RODNEY VICTOR",
+                    Version = "v1.0.0"
+                });
+
+                var xmlFile = "SalesDocumentation_DeveloperEvaluation.xml";
+                var xmlPath = System.IO.Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Description = "Please, inform JWT Token (ex: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...)",
