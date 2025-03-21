@@ -41,8 +41,7 @@ public class Program
             builder.RegisterDependencies();
 
             builder.Services.AddAutoMapper(typeof(Program).Assembly, typeof(ApplicationLayer).Assembly);
-            //builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
+            
             builder.Services.AddMediatR(cfg =>
             {
                 cfg.RegisterServicesFromAssemblies(
@@ -61,14 +60,7 @@ public class Program
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
-            //using (var scope = app.Services.CreateScope()) 
-            //{
-            //    var context = scope.ServiceProvider.GetRequiredService<DefaultContext>();
-            //    context.Database.Migrate();
-            //}
-
-
+                        
             app.UseHttpsRedirection();
 
             app.UseAuthentication();

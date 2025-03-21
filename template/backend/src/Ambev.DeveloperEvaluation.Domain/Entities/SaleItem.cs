@@ -45,7 +45,30 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         /// </summary>
         public decimal TotalItemAmount { get; set; }
 
+        /// <summary>
+        /// Navigation property to the related Sale entity.
+        /// </summary>
         public Sale Sale { get; private set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SaleItem"/> class with the specified parameters.
+        /// </summary>
+        /// <param name="saleId">The identifier of the sale this item belongs to.</param>
+        /// <param name="product">The product name or description.</param>
+        /// <param name="quantity">The quantity of the product.</param>
+        /// <param name="unitPrice">The unit price of the product.</param>
+        /// <param name="discount">The discount applied to the product.</param>
+        /// <param name="totalItemAmount">The total amount for this item (after discount).</param>
+        public SaleItem(Guid saleId, string product, int quantity, decimal unitPrice, decimal discount, decimal totalItemAmount)
+        {
+            Id = Guid.NewGuid();
+            SaleId = saleId;
+            Product = product;
+            Quantity = quantity;
+            UnitPrice = unitPrice;
+            Discount = discount;
+            TotalItemAmount = totalItemAmount;
+        }
 
         /// <summary>
         /// Validates the sale item entity using the SaleItemValidator rules.

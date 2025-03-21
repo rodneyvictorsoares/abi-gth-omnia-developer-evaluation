@@ -28,6 +28,9 @@ namespace Ambev.DeveloperEvaluation.Domain.Validation
 
             RuleFor(sale => sale.Items)
                 .NotEmpty().WithMessage("At least one sale item is required.");
+
+            RuleForEach(sale => sale.Items)
+                .SetValidator(new SaleItemValidator());
         }
 
         private bool BeAvalidDate(DateTime date)

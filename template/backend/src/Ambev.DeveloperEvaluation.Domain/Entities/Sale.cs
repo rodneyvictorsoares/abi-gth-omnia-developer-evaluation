@@ -1,6 +1,7 @@
 ﻿using Ambev.DeveloperEvaluation.Common.Validation;
 using Ambev.DeveloperEvaluation.Domain.Common;
 using Ambev.DeveloperEvaluation.Domain.Validation;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Ambev.DeveloperEvaluation.Domain.Entities
 {
@@ -66,6 +67,36 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         public Sale()
         {
             CreateAt = DateTime.UtcNow;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Sale"/> class with the specified parameters.
+        /// </summary>
+        /// <param name="saleNumber">The sale number, which uniquely identifies the sale.</param>
+        /// <param name="saleDate">The date when the sale was made.</param>
+        /// <param name="customer">The customer associated with the sale.</param>
+        /// <param name="branch">The branch where the sale occurred.</param>
+        public Sale(string saleNumber, DateTime saleDate, string customer, string branch)
+        {
+            Id = Guid.NewGuid();
+            SaleNumber = saleNumber;
+            SaleDate = saleDate;
+            Customer = customer;
+            Branch = branch;
+            Cancelled = false;
+            Items = new List<SaleItem>();
+            TotalAmount = 0;
+            CreateAt = DateTime.UtcNow;
+        }
+
+        /// <summary>
+        /// Adds a sale item to the sale and updates the total sale amount.
+        /// </summary>
+        /// <param name="item">The sale item to add.</param>
+        public void AddItem(SaleItem item)
+        {
+            Items.Add(item);
+            TotalAmount += item.TotalItemAmount;
         }
 
         /// <summary>
