@@ -1,10 +1,13 @@
 ﻿using Ambev.DeveloperEvaluation.Application.Sales.CancelSale;
+using Ambev.DeveloperEvaluation.Application.Sales.CancelSaleItem;
 using Ambev.DeveloperEvaluation.Application.Sales.CreateSale;
 using Ambev.DeveloperEvaluation.Application.Sales.DeleteSale;
 using Ambev.DeveloperEvaluation.Application.Sales.GetSale;
+using Ambev.DeveloperEvaluation.Application.Sales.GetSaleItems;
 using Ambev.DeveloperEvaluation.Application.Sales.UpdateSale;
 using Ambev.DeveloperEvaluation.WebApi.Common;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.CancelSale;
+using Ambev.DeveloperEvaluation.WebApi.Features.Sales.CancelSaleItem;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.CreateSale;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.DeleteSale;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.GetSale;
@@ -12,7 +15,6 @@ using Ambev.DeveloperEvaluation.WebApi.Features.Sales.UpdateSale;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.Validators;
 using AutoMapper;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales
@@ -70,7 +72,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales
             {
                 return NotFound(new ApiResponse { Success = false, Message = ex.Message });
             }
-            
+
         }
 
         /// <summary>
@@ -96,11 +98,11 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales
 
                 return Ok(_mapper.Map<GetSaleResponse>(result), "Sale retrieved successfully.");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return NotFound(new ApiResponse { Success = false, Message = ex.Message });
             }
-            
+
         }
 
         /// <summary>
@@ -161,11 +163,11 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales
 
                 return Ok(_mapper.Map<CancelSaleResponse>(result), "Sale cancelled successfully.");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return NotFound(new ApiResponse { Success = false, Message = ex.Message });
             }
-            
+
         }
 
         /// <summary>
@@ -193,7 +195,63 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales
             {
                 return NotFound(new ApiResponse { Success = false, Message = ex.Message });
             }
-            
+
+        }
+
+        /// <summary>
+        /// Retrieves all items for a given sale.
+        /// </summary>
+        /// <param name="saleId">The sale identifier.</param>
+        /// <param name="cancellationToken">A token to cancel the operation.</param>
+        /// <returns>An envelope with the list of sale items and a success message.</returns>
+        [HttpGet("{saleId}/items")]
+        [ProducesResponseType(typeof(ApiResponseWithData<List<Application.Sales.GetSaleItems.GetSaleItemDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetSaleItems(Guid saleId, CancellationToken cancellationToken)
+        {
+            if (saleId == Guid.Empty)
+                return BadRequest("Invalid sale ID.");
+
+            try
+            {
+                // Ajuste: use o tipo GetSaleItemsQuery, conforme definido na camada Application.
+                var query = new GetSaleItemsQuery { SaleId = saleId };
+                var result = await _mediator.Send(query, cancellationToken);
+                return Ok(_mapper.Map<GetSaleItemsResponse>(result), "Sale items retrieved successfully.");
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new ApiResponse { Success = false, Message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Cancels a specific sale item.
+        /// </summary>
+        /// <param name="saleId">The identifier of the sale containing the item.</param>
+        /// <param name="itemId">The identifier of the sale item to cancel.</param>
+        /// <param name="cancellationToken">A token to cancel the operation.</param>
+        /// <returns>An envelope with the cancelled sale item identifier and a success message.</returns>
+        [HttpPatch("{saleId}/items/{itemId}/cancel")]
+        [ProducesResponseType(typeof(ApiResponseWithData<CancelSaleItemResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> CancelSaleItem(Guid saleId, Guid itemId, CancellationToken cancellationToken)
+        {
+            if (saleId == Guid.Empty || itemId == Guid.Empty)
+                return BadRequest("Invalid sale or sale item ID.");
+
+            try
+            {
+                var command = new CancelSaleItemCommand { SaleId = saleId, SaleItemId = itemId };
+                var result = await _mediator.Send(command, cancellationToken);
+                return Ok(_mapper.Map<CancelSaleItemResponse>(result), "Sale item cancelled successfully.");
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new ApiResponse { Success = false, Message = ex.Message });
+            }
         }
     }
 }

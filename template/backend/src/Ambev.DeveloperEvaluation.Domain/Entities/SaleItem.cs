@@ -46,6 +46,11 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         public decimal TotalItemAmount { get; set; }
 
         /// <summary>
+        /// Gets or sets a flag indicating whether this sale item has been cancelled.
+        /// </summary>
+        public bool Cancelled { get; private set; } = false;
+
+        /// <summary>
         /// Navigation property to the related Sale entity.
         /// </summary>
         public Sale Sale { get; private set; }
@@ -68,6 +73,14 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
             UnitPrice = unitPrice;
             Discount = discount;
             TotalItemAmount = totalItemAmount;
+        }
+
+        /// <summary>
+        /// Cancels this sale item by marking it as cancelled.
+        /// </summary>
+        public void Cancel()
+        {
+            Cancelled = true;
         }
 
         /// <summary>
