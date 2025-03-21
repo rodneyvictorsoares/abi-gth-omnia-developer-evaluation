@@ -70,6 +70,11 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.GetSale
     public class GetSaleItemDto
     {
         /// <summary>
+        /// Gets or sets the sale item identifier.
+        /// </summary>
+        public Guid SaleItemId { get; set; }
+
+        /// <summary>
         /// Gets or sets the product name.
         /// </summary>
         public string Product { get; set; }

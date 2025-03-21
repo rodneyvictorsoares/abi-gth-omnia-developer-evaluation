@@ -2,7 +2,6 @@
 using Ambev.DeveloperEvaluation.Application.Sales.CancelSaleItem;
 using Ambev.DeveloperEvaluation.Application.Sales.CreateSale;
 using Ambev.DeveloperEvaluation.Application.Sales.DeleteSale;
-using Ambev.DeveloperEvaluation.Application.Sales.GetSale;
 using Ambev.DeveloperEvaluation.Application.Sales.GetSaleItems;
 using Ambev.DeveloperEvaluation.Application.Sales.UpdateSale;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.CancelSale;
@@ -24,6 +23,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales
             CreateMap<CreateSaleResult, CreateSaleResponse>();
 
             CreateMap<GetSaleResult, GetSaleResponse>();
+                
 
             CreateMap<UpdateSaleRequest, UpdateSaleCommand>();
             CreateMap<UpdateSaleResult, UpdateSaleResponse>();

@@ -13,8 +13,10 @@ using Ambev.DeveloperEvaluation.WebApi.Features.Sales.DeleteSale;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.GetSale;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.UpdateSale;
 using Ambev.DeveloperEvaluation.WebApi.Features.Sales.Validators;
+using Ambev.DeveloperEvaluation.WebApi.Features.SalesNew;
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales
@@ -22,6 +24,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales
     /// <summary>
     /// Controller responsible for handling Sales related operations (CRUD).
     /// </summary>
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class SalesController : BaseController
@@ -96,7 +99,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales
                 var query = new GetSaleQuery { SaleId = id };
                 var result = await _mediator.Send(query, cancellationToken);
 
-                return Ok(_mapper.Map<GetSaleResponse>(result), "Sale retrieved successfully.");
+                return Ok(_mapper.Map<SaleInfoResponse>(result), "Sale retrieved successfully.");
             }
             catch (Exception ex)
             {
