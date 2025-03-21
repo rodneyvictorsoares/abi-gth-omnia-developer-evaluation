@@ -2,6 +2,7 @@
 using Ambev.DeveloperEvaluation.ORM;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale
 {
@@ -50,6 +51,8 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale
             }
 
             await _context.SaveChangesAsync(cancellationToken);
+
+            Log.Information("SaleModified: Sale {SaleId} updated successfully.", sale.Id);
 
             return new UpdateSaleResult
             {

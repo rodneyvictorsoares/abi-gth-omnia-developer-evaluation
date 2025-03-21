@@ -1,6 +1,7 @@
 ﻿using Ambev.DeveloperEvaluation.ORM;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,6 +44,8 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CancelSale
             // Call the domain method to cancel the sale
             sale.Cancel();
             await _context.SaveChangesAsync(cancellationToken);
+
+            Log.Information("SaleCancelled: Sale {SaleId} cancelled successfully.", sale.Id);
 
             return new CancelSaleResult
             {

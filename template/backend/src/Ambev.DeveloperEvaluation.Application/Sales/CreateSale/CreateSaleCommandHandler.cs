@@ -1,6 +1,7 @@
 ﻿using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.ORM;
 using MediatR;
+using Serilog;
 
 
 namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
@@ -39,6 +40,8 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
 
             _context.Sales.Add(sale);
             await _context.SaveChangesAsync(cancellationToken);
+
+            Log.Information("SaleCreated: Sale {SaleId} created successfully.", sale.Id);
 
             return new CreateSaleResult
             {

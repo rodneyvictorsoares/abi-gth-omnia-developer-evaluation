@@ -1,6 +1,7 @@
 ﻿using Ambev.DeveloperEvaluation.ORM;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace Ambev.DeveloperEvaluation.Application.Sales.CancelSaleItem
 {
@@ -37,6 +38,8 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CancelSaleItem
             saleItem.Cancel();
 
             await _context.SaveChangesAsync(cancellationToken);
+
+            Log.Information("ItemCancelled: Sale item {SaleItemId} from sale {SaleId} cancelled successfully.", saleItem.Id, saleItem.SaleId);
 
             return new CancelSaleItemResult
             {
