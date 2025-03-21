@@ -6,9 +6,11 @@ using Ambev.DeveloperEvaluation.Common.Validation;
 using Ambev.DeveloperEvaluation.IoC;
 using Ambev.DeveloperEvaluation.ORM;
 using Ambev.DeveloperEvaluation.WebApi.Middleware;
+using Ambev.DeveloperEvaluation.Common.Messaging;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Microsoft.OpenApi.Models;
 
 namespace Ambev.DeveloperEvaluation.WebApi;
 
@@ -27,7 +29,32 @@ public class Program
             builder.Services.AddEndpointsApiExplorer();
 
             builder.AddBasicHealthChecks();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Developer Evaluation API - RODNEY VICTOR",
+                    Version = "v1.0.0"
+                });
+
+                var xmlFile = "SalesDocumentation_DeveloperEvaluation.xml";
+                var xmlPath = System.IO.Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "Please, inform JWT Token (ex: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...)",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+
+                c.OperationFilter<AuthorizeCheckOperationFilter>();
+
+                c.CustomSchemaIds(type => type.FullName);
+                
+            });
 
             builder.Services.AddDbContext<DefaultContext>(options =>
                 options.UseNpgsql(
@@ -41,7 +68,7 @@ public class Program
             builder.RegisterDependencies();
 
             builder.Services.AddAutoMapper(typeof(Program).Assembly, typeof(ApplicationLayer).Assembly);
-
+            
             builder.Services.AddMediatR(cfg =>
             {
                 cfg.RegisterServicesFromAssemblies(
@@ -49,6 +76,8 @@ public class Program
                     typeof(Program).Assembly
                 );
             });
+
+            builder.Services.AddSingleton<IEventPublisher, RabbitMQEventPublisher>();
 
             builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
@@ -60,7 +89,7 @@ public class Program
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+                        
             app.UseHttpsRedirection();
 
             app.UseAuthentication();

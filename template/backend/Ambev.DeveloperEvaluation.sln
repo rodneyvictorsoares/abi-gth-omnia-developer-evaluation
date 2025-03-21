@@ -32,6 +32,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ambev.DeveloperEvaluation.ORM", "src\Ambev.DeveloperEvaluation.ORM\Ambev.DeveloperEvaluation.ORM.csproj", "{B62C8404-A5FA-4D58-9398-1E3C55C28D14}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ambev.DeveloperEvaluation.Application", "src\Ambev.DeveloperEvaluation.Application\Ambev.DeveloperEvaluation.Application.csproj", "{80CED839-FE4A-4286-9403-252D230BA2A0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B62C8404-A5FA-4D58-9398-1E3C55C28D14} = {B62C8404-A5FA-4D58-9398-1E3C55C28D14}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ambev.DeveloperEvaluation.Domain", "src\Ambev.DeveloperEvaluation.Domain\Ambev.DeveloperEvaluation.Domain.csproj", "{B19079B3-A9DD-4408-9ED2-899D735C66BF}"
 EndProject
