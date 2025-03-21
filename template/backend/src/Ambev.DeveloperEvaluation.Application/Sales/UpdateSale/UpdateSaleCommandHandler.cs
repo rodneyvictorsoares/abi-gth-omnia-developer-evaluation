@@ -1,4 +1,5 @@
-﻿using Ambev.DeveloperEvaluation.Domain.Validation;
+﻿using Ambev.DeveloperEvaluation.Common.Messaging;
+using Ambev.DeveloperEvaluation.Domain.Validation;
 using Ambev.DeveloperEvaluation.ORM;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -12,14 +13,17 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale
     public class UpdateSaleCommandHandler : IRequestHandler<UpdateSaleCommand, UpdateSaleResult>
     {
         private readonly DefaultContext _context;
+        private readonly IEventPublisher _eventPublisher;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdateSaleCommandHandler"/> class.
         /// </summary>
         /// <param name="context">The EF Core context for accessing sales data.</param>
-        public UpdateSaleCommandHandler(DefaultContext context)
+        /// <param name="eventPublisher">The event publisher to send events to the message broker.</param>
+        public UpdateSaleCommandHandler(DefaultContext context, IEventPublisher eventPublisher)
         {
             _context = context;
+            _eventPublisher = eventPublisher;
         }
 
         /// <summary>
@@ -53,6 +57,8 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale
             await _context.SaveChangesAsync(cancellationToken);
 
             Log.Information("SaleModified: Sale {SaleId} updated successfully.", sale.Id);
+
+            await _eventPublisher.PublishEventAsync("SaleModified", new { SaleId = sale.Id }, cancellationToken);
 
             return new UpdateSaleResult
             {

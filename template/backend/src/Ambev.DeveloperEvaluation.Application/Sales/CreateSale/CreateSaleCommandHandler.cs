@@ -1,4 +1,5 @@
-﻿using Ambev.DeveloperEvaluation.Domain.Entities;
+﻿using Ambev.DeveloperEvaluation.Common.Messaging;
+using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.ORM;
 using MediatR;
 using Serilog;
@@ -6,14 +7,31 @@ using Serilog;
 
 namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
 {
+    /// <summary>
+    /// Handles the creation of a new sale record.
+    /// </summary>
     public class CreateSaleCommandHandler : IRequestHandler<CreateSaleCommand, CreateSaleResult>
     {
         private readonly DefaultContext _context;
-        public CreateSaleCommandHandler(DefaultContext context)
+        private readonly IEventPublisher _eventPublisher;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CreateSaleCommandHandler"/> class.
+        /// </summary>
+        /// <param name="context">The EF Core context for accessing sales data.</param>
+        /// <param name="eventPublisher">The event publisher to send events to the message broker.</param>
+        public CreateSaleCommandHandler(DefaultContext context, IEventPublisher eventPublisher)
         {
             _context = context;
+            _eventPublisher = eventPublisher;
         }
 
+        /// <summary>
+        /// Handles the creation of a new sale, applying business rules, validations, and publishing a SaleCreated event.
+        /// </summary>
+        /// <param name="request">The command containing sale data.</param>
+        /// <param name="cancellationToken">A token for cancelling the operation.</param>
+        /// <returns>A <see cref="CreateSaleResult"/> with the sale identifier and a message.</returns>
         public async Task<CreateSaleResult> Handle(CreateSaleCommand request, CancellationToken cancellationToken)
         {
             var sale = new Sale(request.SaleNumber, request.SaleDate, request.Customer, request.Branch);
@@ -42,6 +60,8 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
             await _context.SaveChangesAsync(cancellationToken);
 
             Log.Information("SaleCreated: Sale {SaleId} created successfully.", sale.Id);
+
+            await _eventPublisher.PublishEventAsync("SaleCreated", new { SaleId = sale.Id }, cancellationToken);
 
             return new CreateSaleResult
             {

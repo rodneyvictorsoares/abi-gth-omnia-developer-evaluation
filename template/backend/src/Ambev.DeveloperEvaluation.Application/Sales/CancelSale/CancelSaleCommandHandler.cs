@@ -1,4 +1,5 @@
-﻿using Ambev.DeveloperEvaluation.ORM;
+﻿using Ambev.DeveloperEvaluation.Common.Messaging;
+using Ambev.DeveloperEvaluation.ORM;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -16,14 +17,17 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CancelSale
     public class CancelSaleCommandHandler : IRequestHandler<CancelSaleCommand, CancelSaleResult>
     {
         private readonly DefaultContext _context;
+        private readonly IEventPublisher _eventPublisher;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CancelSaleCommandHandler"/> class.
         /// </summary>
         /// <param name="context">The EF Core context for accessing sales data.</param>
-        public CancelSaleCommandHandler(DefaultContext context)
+        /// <param name="eventPublisher">The event publisher to send events to the message broker.</param>
+        public CancelSaleCommandHandler(DefaultContext context, IEventPublisher eventPublisher)
         {
             _context = context;
+            _eventPublisher = eventPublisher;
         }
 
         /// <summary>
@@ -46,6 +50,8 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CancelSale
             await _context.SaveChangesAsync(cancellationToken);
 
             Log.Information("SaleCancelled: Sale {SaleId} cancelled successfully.", sale.Id);
+
+            await _eventPublisher.PublishEventAsync("SaleCancelled", new { SaleId = sale.Id }, cancellationToken);
 
             return new CancelSaleResult
             {
